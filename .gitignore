@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Environment Variables (Keep API keys strictly safe)
+.env
+.env.local
+
+# Logs and OS files
+*.log
+.DS_Store
+Thumbs.db
+
+# Database and Uploads
+*.db
+*.sqlite
+data/
+uploads/
+
+# Local backup folders
+backup_pre_*/
+

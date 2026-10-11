@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="32" height="32">
+  <defs>
+    <linearGradient id="favLeaf" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#22D3EE"/>
+      <stop offset="100%" stop-color="#3B82F6"/>
+    </linearGradient>
+    <linearGradient id="favDark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18253D"/>
+      <stop offset="100%" stop-color="#111C30"/>
+    </linearGradient>
+  </defs>
+  <circle cx="50" cy="50" r="48" fill="#0A1220" stroke="#3B82F6" stroke-width="4"/>
+  <circle cx="50" cy="50" r="42" fill="#111C30"/>
+  <!-- Leaf Blade in Vibrant Cyan-Blue -->
+  <path d="M 50 14 C 62 14 74 24 74 38 C 74 46 68 53 58 54 C 54 48 48 42 38 40 C 36 28 42 16 50 14 Z" fill="url(#favLeaf)"/>
+  <path d="M 46 20 Q 55 35 60 48" stroke="#FFFFFF" stroke-width="2" fill="none" opacity="0.8"/>
+  <!-- Iris Blades -->
+  <path d="M 74 38 C 82 48 83 62 76 72 C 69 77 60 76 52 70 C 53 62 52 54 48 45 C 59 41 69 39 74 38 Z" fill="url(#favDark)" stroke="#25365A" stroke-width="1.5"/>
+  <path d="M 76 72 C 68 83 54 88 41 85 C 34 81 31 71 34 62 C 40 59 47 55 52 48 C 58 58 67 67 76 72 Z" fill="url(#favDark)" stroke="#25365A" stroke-width="1.5"/>
+  <path d="M 41 85 C 27 84 16 74 15 60 C 16 51 23 46 32 48 C 34 56 38 63 45 70 C 41 77 41 82 41 85 Z" fill="url(#favDark)" stroke="#25365A" stroke-width="1.5"/>
+  <path d="M 15 60 C 14 46 20 32 31 24 C 39 21 47 25 48 34 C 43 39 39 46 38 55 C 28 56 20 58 15 60 Z" fill="url(#favDark)" stroke="#25365A" stroke-width="1.5"/>
+  <!-- Center Focus Point (Cyan with white pin) -->
+  <circle cx="50" cy="50" r="7" fill="#22D3EE"/>
+  <circle cx="50" cy="50" r="3" fill="#FFFFFF"/>
+</svg>

@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FocusGen - Eco-Adaptive AI Image Generator</title>
+  <meta name="description" content="FocusGen is a professional AI image generator that saves energy with web-first licensed photography search and purpose-adaptive photorealistic generation.">
+  <meta name="theme-color" content="#0A1220">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <!-- Modern Geometric Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Tamil:wght@400;600;700&family=Sora:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ======================================================================== -->
+  <!-- MAIN APP CONTAINER (ChatGPT-Style Layout)                                -->
+  <!-- ======================================================================== -->
+  <div class="app-container" id="app-container">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Top Brand Header -->
+      <div class="sidebar-header">
+        <div class="brand-wrapper">
+          <img src="logo.svg" alt="FocusGen Logo" class="brand-logo-svg">
+          <span class="brand-name">FocusGen</span>
+        </div>
+        <button type="button" class="btn-icon-toggle" id="btn-collapse-sidebar" title="Collapse Sidebar" aria-label="Collapse Sidebar">
+          ✕
+        </button>
+      </div>
+
+      <!-- Actions Top: New Chat & Search -->
+      <div class="sidebar-actions-top">
+        <button type="button" class="btn-new-chat" id="btn-new-chat">
+          <svg class="feature-icon-svg" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span id="lbl-new-chat">New Chat</span>
+        </button>
+        <div class="search-chats-box">
+          <span class="search-icon">
+            <svg class="feature-icon-svg" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </span>
+          <input type="text" class="search-chats-input" id="search-chats-input" placeholder="Search chats..." autocomplete="off">
+        </div>
+      </div>
+
+      <!-- Scrollable Sidebar Content -->
+      <div class="sidebar-content">
+
+        <!-- Favorites Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title" id="lbl-favorites">
+            <span style="display:flex; align-items:center; gap:6px;">
+              <svg class="feature-icon-svg" viewBox="0 0 24 24" style="color:#FBBF24;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              <span>Favorites</span>
+              <span id="fav-count-badge" class="mode-pill-badge" style="margin-left:auto;">0</span>
+            </span>
+          </div>
+          <div class="favorites-mini-list" id="sidebar-favorites-list">
+            <span class="empty-fav-note" style="font-size:0.75rem; color:var(--muted); padding:4px;">No favorites yet. Star any image to save.</span>
+          </div>
+        </div>
+
+        <!-- Recent Chats Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title" id="lbl-recent-chats">Recent Chats</div>
+          <div id="recent-chats-list">
+            <!-- Grouped by Today / Yesterday / Earlier dynamically -->
+          </div>
+        </div>
+
+        <!-- Modes Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title" id="lbl-modes">Modes</div>
+          <div class="modes-list" role="radiogroup" aria-label="Generator Modes">
+            <button type="button" class="mode-pill-btn active" data-mode="normal" id="mode-btn-normal">
+              <svg class="mode-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span>Normal</span>
+            </button>
+            <button type="button" class="mode-pill-btn" data-mode="kids" id="mode-btn-kids">
+              <svg class="mode-icon-svg" viewBox="0 0 24 24"><path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <span>Kids</span> <span class="mode-pill-badge">Safe</span>
+            </button>
+            <button type="button" class="mode-pill-btn" data-mode="elder" id="mode-btn-elder">
+              <svg class="mode-icon-svg" viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>
+              <span>Easy Voice</span>
+            </button>
+            <button type="button" class="mode-pill-btn" data-mode="student" id="mode-btn-student">
+              <svg class="mode-icon-svg" viewBox="0 0 24 24"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>
+              <span>Student</span> <span class="mode-pill-badge">Slides</span>
+            </button>
+            <button type="button" class="mode-pill-btn" data-mode="work" id="mode-btn-work">
+              <svg class="mode-icon-svg" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="7" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              <span>Work</span> <span class="mode-pill-badge">Batch</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Features Section -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title" id="lbl-features">Features</div>
+          <div class="features-menu">
+            <!-- Web-First Search Toggle -->
+            <div class="feature-item-btn">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                <span id="feat-web-first-text">Web-First Search</span>
+              </div>
+              <label class="switch" title="Search licensed photos first">
+                <input type="checkbox" id="toggle-web-first" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- Green Time (Simulated grid data) Toggle -->
+            <div class="feature-item-btn">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><path d="M12 22v-7"/><path d="M9 9l3-7 3 7"/><circle cx="12" cy="12" r="10"/></svg>
+                <span>Green Time</span>
+              </div>
+              <label class="switch" title="Simulated renewable grid data">
+                <input type="checkbox" id="toggle-green-time">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- Smart Compress Studio -->
+            <button type="button" class="feature-item-btn" id="feat-btn-compress">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><path d="M4 14h16M4 10h16M12 4v6M12 14v6"/></svg>
+                <span>Smart Compress</span>
+              </div>
+              <span class="mode-pill-badge">Sharp</span>
+            </button>
+
+            <!-- Try 4 Ideas -->
+            <button type="button" class="feature-item-btn" id="feat-btn-4ideas">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><circle cx="15.5" cy="15.5" r="1.5"/></svg>
+                <span>Try 4 Ideas</span>
+              </div>
+            </button>
+
+            <!-- Focus Clarity Toggle (on by default) -->
+            <div class="feature-item-btn">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/><line x1="12" y1="2" x2="12" y2="5"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="2" y1="12" x2="5" y2="12"/><line x1="19" y1="12" x2="22" y2="12"/></svg>
+                <span id="feat-focus-clarity-text">Focus Clarity</span>
+              </div>
+              <label class="switch" title="Clarity allocation: high clarity subject, soft background (on by default)">
+                <input type="checkbox" id="toggle-focus-clarity" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- Focus Map View -->
+            <div class="feature-item-btn">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                <span>Focus Map View</span>
+              </div>
+              <label class="switch" title="Overlay focus effort zones">
+                <input type="checkbox" id="toggle-focus-map">
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <!-- Session Ledger -->
+            <button type="button" class="feature-item-btn" id="feat-btn-ledger">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <span>Session Ledger</span>
+              </div>
+            </button>
+
+            <!-- Calibrate Estimate -->
+            <button type="button" class="feature-item-btn" id="feat-btn-calibrate">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                <span>Calibrate Estimate</span>
+              </div>
+            </button>
+
+            <!-- How It Works -->
+            <button type="button" class="feature-item-btn" id="feat-btn-how">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                <span>How Estimate Works</span>
+              </div>
+            </button>
+
+            <!-- Limitations -->
+            <button type="button" class="feature-item-btn" id="feat-btn-limitations">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                <span>Limitations</span>
+              </div>
+            </button>
+
+            <!-- Diagnose AI -->
+            <button type="button" class="feature-item-btn" id="feat-btn-diagnose">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+                <span>Diagnose AI</span>
+              </div>
+            </button>
+
+            <!-- Settings & Providers -->
+            <button type="button" class="feature-item-btn" id="feat-btn-settings">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                <span>Settings & Sources</span>
+              </div>
+            </button>
+
+            <!-- Language Switcher -->
+            <div class="feature-item-btn" style="padding-top:10px;">
+              <div class="feature-label-group">
+                <svg class="feature-icon-svg" viewBox="0 0 24 24"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>
+                <span>Language</span>
+              </div>
+              <select id="select-lang" style="background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:3px 6px; font-size:0.8rem; color:var(--text);">
+                <option value="en">English</option>
+                <option value="ta">தமிழ்</option>
+                <option value="th">Thanglish</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Uploads Library -->
+        <div class="sidebar-section">
+          <div class="sidebar-section-title" id="lbl-uploads">Uploads Library</div>
+          <div class="uploads-mini-list" id="sidebar-uploads-list">
+            <!-- Injected dynamically -->
+            <span style="font-size:0.75rem; color:var(--muted); padding:4px;">No files uploaded yet.</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom User Bar -->
+      <div class="sidebar-footer">
+        <div class="user-profile-info">
+          <div class="user-avatar-circle" id="user-avatar-initial">U</div>
+          <div class="user-meta">
+            <span class="user-email-text" id="user-email-display">user@example.com</span>
+            <span class="user-badge-guest" id="user-role-badge">Pro Account</span>
+          </div>
+        </div>
+        <div class="footer-actions">
+          <button type="button" class="footer-btn" id="btn-toggle-theme" title="Toggle Dark/Light Theme">
+            <svg class="feature-icon-svg" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+          </button>
+          <button type="button" class="footer-btn" id="btn-logout" title="Sign Out">
+            <svg class="feature-icon-svg" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CENTER CHAT AREA -->
+    <main class="main-chat-area" id="main-chat-area">
+      
+      <!-- Top Bar -->
+      <div class="chat-top-bar">
+        <div class="top-bar-left">
+          <button type="button" class="btn-sidebar-toggle" id="btn-open-sidebar" title="Open Sidebar">
+            ☰
+          </button>
+          <h2 class="chat-title-heading" id="current-chat-title">New Chat</h2>
+        </div>
+        <div class="top-bar-right">
+          <div class="server-status-pill" id="server-status-pill" title="Backend Server Status (port 3000)">
+            <span class="status-dot-indicator online" id="server-status-dot"></span>
+            <span class="server-status-label" id="server-status-label">Connected</span>
+          </div>
+          <span class="mode-badge-indicator" id="top-mode-badge">Normal Mode</span>
+          <button type="button" class="green-hours-toggle-btn hidden" id="btn-green-hours-toggle" title="Simulated grid data">
+            🌿 <span id="lbl-green-hours">Simulated grid data</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- AI Blocked / Allocation Notice Banner -->
+      <div class="ai-blocked-banner hidden" id="ai-blocked-banner">
+        <div class="ai-blocked-banner-content">
+          <span class="ai-blocked-icon">⏳</span>
+          <span id="ai-blocked-banner-text">Daily free AI allocation is used up. It resets at 00:00 UTC (5:30 AM IST).</span>
+        </div>
+        <div class="ai-blocked-countdown-badge" id="ai-blocked-banner-countdown">
+          Countdown: --:--:--
+        </div>
+      </div>
+
+      <!-- Chat Messages Scroll Container -->
+      <div class="chat-messages-container" id="chat-messages-container" role="log" aria-live="polite">
+        
+        <!-- Empty State (Shown initially) -->
+        <div class="chat-empty-state" id="chat-empty-state">
+          <div class="empty-logo-wrapper">
+            <img src="logo.svg" alt="FocusGen Aperture Logo" style="width:100%; height:100%;">
+          </div>
+          <h1 class="empty-title" id="empty-title-text">What would you like to create?</h1>
+          <p class="empty-subtitle" id="empty-subtitle-text">
+            Type a single word like <strong>"cake"</strong> or <strong>"tiger"</strong>. FocusGen searches licensed photography first, and generates DSLR photorealism with minimal carbon footprint.
+          </p>
+
+          <!-- 3-Step Onboarding Hint (shown once on first login) -->
+          <div class="onboarding-hint-card" id="onboarding-hint-card">
+            <div class="onboarding-title">⚡ How FocusGen Works</div>
+            <div class="onboarding-steps-row">
+              <div class="onboarding-step">
+                <span class="step-num">1</span>
+                <span class="step-text">Type a word</span>
+              </div>
+              <span class="step-arrow">→</span>
+              <div class="onboarding-step">
+                <span class="step-num">2</span>
+                <span class="step-text">Tap purpose</span>
+              </div>
+              <span class="step-arrow">→</span>
+              <div class="onboarding-step">
+                <span class="step-num">3</span>
+                <span class="step-text">See the saving</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="example-chips-grid">
+            <button type="button" class="example-chip" data-word="cake">
+              <span class="chip-icon">🎂</span>
+              <div>
+                <div class="chip-text">Cake</div>
+                <div class="chip-sub">Tap to choose purpose</div>
+              </div>
+            </button>
+            <button type="button" class="example-chip" data-word="tiger">
+              <span class="chip-icon">🐅</span>
+              <div>
+                <div class="chip-text">Tiger</div>
+                <div class="chip-sub">Wildlife photograph</div>
+              </div>
+            </button>
+            <button type="button" class="example-chip" data-word="temple">
+              <span class="chip-icon">🏛️</span>
+              <div>
+                <div class="chip-text">Temple</div>
+                <div class="chip-sub">Heritage architecture</div>
+              </div>
+            </button>
+            <button type="button" class="example-chip" data-word="mango">
+              <span class="chip-icon">🥭</span>
+              <div>
+                <div class="chip-text">Mango</div>
+                <div class="chip-sub">Fresh fruit study</div>
+              </div>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Fixed Bottom Input Bar -->
+      <div class="chat-input-wrapper">
+        <div class="chat-input-card">
+          <button type="button" class="btn-input-attach" id="btn-attach-file" title="Upload image (JPG/PNG) or document (PDF/TXT/DOCX)">
+            +
+          </button>
+          <input 
+            type="text" 
+            class="chat-input-field" 
+            id="chat-input-field" 
+            placeholder="Type a word like 'cake', speak, or drop a file..." 
+            autocomplete="off"
+          />
+          <button type="button" class="btn-input-mic" id="btn-voice-input" title="Speak (English & Tamil supported)">
+            🎙️
+          </button>
+          <button type="button" class="btn-input-send" id="btn-send-message" title="Send">
+            ➔
+          </button>
+        </div>
+        <div class="input-footer-note" id="input-footer-note">
+          FocusGen uses licensed web photography & adaptive DSLR physics · No cartoon fallbacks · 100% transparent energy
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Hidden File Input for Attachments -->
+  <input type="file" id="hidden-file-input" class="hidden" accept="image/jpeg,image/png,image/webp,application/pdf,text/plain,application/vnd.openxmlformats-officedocument.wordprocessingml.document">
+
+  <!-- ======================================================================== -->
+  <!-- AUTHENTICATION OVERLAY (Login First)                                     -->
+  <!-- ======================================================================== -->
+  <div class="modal-overlay hidden" id="auth-modal-overlay">
+    <div class="auth-overlay-card" style="position:relative;">
+      <button type="button" class="btn-close-modal" id="btn-close-auth" style="position:absolute; top:16px; right:16px;" title="Explore without signing in">✕</button>
+      <div class="auth-logo-center">
+        <img src="logo.svg" alt="FocusGen Logo" style="width:54px; height:54px;">
+      </div>
+      <h2 class="auth-title">Welcome to FocusGen</h2>
+      <p class="auth-subtitle">Eco-Adaptive Photorealistic Image Intelligence</p>
+
+      <div class="auth-tabs">
+        <button type="button" class="auth-tab-btn active" id="tab-login">Sign In</button>
+        <button type="button" class="auth-tab-btn" id="tab-signup">Create Account</button>
+      </div>
+
+      <div class="auth-error-banner hidden" id="auth-error-banner"></div>
+
+      <form class="auth-form" id="auth-form">
+        <div class="form-group">
+          <label for="auth-email">Email Address</label>
+          <input type="email" id="auth-email" class="form-input" placeholder="you@example.com" required autocomplete="email">
+        </div>
+        <div class="form-group">
+          <label for="auth-password">Password</label>
+          <input type="password" id="auth-password" class="form-input" placeholder="••••••••" required minlength="6" autocomplete="current-password">
+        </div>
+        <button type="submit" class="btn-auth-submit" id="btn-auth-submit">Sign In</button>
+      </form>
+
+      <div class="auth-divider">
+        <span>OR</span>
+      </div>
+
+      <button type="button" class="btn-guest-continue" id="btn-guest-continue">
+        Continue as Guest ⚡
+      </button>
+      <div class="guest-limit-subnote">
+        Limited to 5 generations · No saved history
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================== -->
+  <!-- SMART COMPRESS STUDIO MODAL (Sharp Server-Side + Slider)                 -->
+  <!-- ======================================================================== -->
+  <div class="modal-overlay hidden" id="compress-modal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🗜️</span> <span>Smart Compress Studio (Sharp Engine)</span>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-compress">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="compress-compare-stats" id="compress-compare-stats">
+          <div class="compress-stat-col" id="compress-col-left">
+            <span class="stat-badge-title" id="stat-left-title">FocusGen Setting</span>
+            <span class="stat-badge-metric" id="stat-left-size">-- KB</span>
+            <span class="stat-badge-wh" id="stat-left-wh">-- Wh</span>
+          </div>
+          <div class="compress-vs-pill">vs</div>
+          <div class="compress-stat-col" id="compress-col-right">
+            <span class="stat-badge-title" id="stat-right-title">Max Setting (1080p)</span>
+            <span class="stat-badge-metric" id="stat-right-size">-- KB</span>
+            <span class="stat-badge-wh" id="stat-right-wh">2.90 Wh</span>
+          </div>
+        </div>
+
+        <div class="compress-stats-banner" id="compress-stats-banner">
+          <div>
+            <div style="font-size:0.75rem; color:var(--muted);">REDUCTION RESULT</div>
+            <div class="compress-stat-badge" id="compress-stat-text">Original 2.4 MB → 180 KB (92% smaller)</div>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label for="compress-purpose-select" style="font-size:0.8rem; color:var(--muted);">Purpose:</label>
+            <select id="compress-purpose-select" style="background:var(--bg); border:1px solid var(--border); border-radius:4px; padding:4px 8px; font-size:0.85rem; color:var(--text);">
+              <option value="chat">Phone Chat (~60% WebP)</option>
+              <option value="school">Project / Slide (~75% WebP)</option>
+              <option value="poster">Poster / Wall (~85% WebP)</option>
+              <option value="print">Print (~95% High Fidelity)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Before / After Interactive Slider (Focus Clarity vs Uniform Clarity) -->
+        <div class="compress-slider-container" id="compress-slider-container">
+          <img src="" alt="Compressed image" class="compress-img-after" id="compress-img-after">
+          <div class="slider-badge-tag right" id="slider-badge-right">Uniform clarity</div>
+          <div class="compress-img-before-wrap" id="compress-img-before-wrap">
+            <img src="" alt="Original image" class="compress-img-before" id="compress-img-before">
+            <div class="slider-badge-tag left" id="slider-badge-left">Focus clarity</div>
+          </div>
+          <div class="compress-slider-handle" id="compress-slider-handle">↔</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" download="focusgen-compressed.webp" class="inline-action-btn accent" id="btn-download-compressed">
+          💾 Download Compressed File
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================== -->
+  <!-- HOW THE ESTIMATE WORKS MODAL                                             -->
+  <!-- ======================================================================== -->
+  <div class="modal-overlay hidden" id="how-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>ℹ️</span> <span>How FocusGen Estimates Work</span>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-how">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.9rem; color:var(--text); line-height:1.6;">
+          FocusGen estimates compute energy with complete mathematical transparency. Every metric is an <strong>estimate, not a measurement</strong>.
+        </p>
+
+        <div>
+          <h4 style="font-size:0.88rem; color:var(--accent); margin-bottom:6px;">1. The Core Formula</h4>
+          <pre class="worked-example-pre">Cost (Wh) = Σ zone [ pixels × steps × ENERGY_PER_PIXEL_STEP ] + overhead</pre>
+          <p style="font-size:0.8rem; color:var(--muted); margin-top:4px;">
+            Web licensed photos incur only small download and resize compression compute (~0.006 Wh, &gt;99% saved). Print mode forces 100% Max tier across full canvas (0% saved, honest accounting).
+          </p>
+        </div>
+
+        <div>
+          <h4 style="font-size:0.88rem; color:var(--accent); margin-bottom:6px;">2. Worked Example (Latest Generation)</h4>
+          <pre class="worked-example-pre" id="worked-example-display">Generate an image to see live mathematical breakdown.</pre>
+        </div>
+
+        <div style="background:var(--surface-2); padding:10px 12px; border-radius:var(--radius-sm); border-left:3px solid var(--accent-2);">
+          <div style="font-weight:600; font-size:0.8rem; color:var(--accent-2);">Honest Disclaimer</div>
+          <div style="font-size:0.78rem; color:var(--muted); margin-top:2px;">
+            Real data centre power draw varies by GPU accelerator TDP (H100/A100), software driver overhead, batch sizes, and data centre cooling efficiency (PUE).
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="inline-action-btn accent" id="btn-close-how-confirm">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================== -->
+  <!-- CALIBRATE ESTIMATE MODAL                                                 -->
+  <!-- ======================================================================== -->
+  <div class="modal-overlay hidden" id="calibrate-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>⚙️</span> <span>Calibrate Mathematical Constants</span>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-calibrate">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:0.86rem; color:var(--muted);">
+          Tweak engineering parameters to calibrate against your specific GPU inference cluster:
+        </p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div class="form-group">
+            <label>Energy per pixel-step (Wh)</label>
+            <input type="text" id="cal-energy-per-px" class="form-input" value="9.218e-8">
+          </div>
+          <div class="form-group">
+            <label>Seconds per step</label>
+            <input type="number" step="0.01" id="cal-secs-step" class="form-input" value="0.767">
+          </div>
+          <div class="form-group">
+            <label>Standard Grid (g CO₂/Wh)</label>
+            <input type="number" step="0.01" id="cal-grid-std" class="form-input" value="0.700">
+          </div>
+          <div class="form-group">
+            <label>Green Grid (g CO₂/Wh)</label>
+            <input type="number" step="0.01" id="cal-grid-green" class="form-input" value="0.175">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="inline-action-btn accent" id="btn-save-calibrate">Apply & Save</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================== -->
+  <!-- SESSION LEDGER MODAL                                                     -->
+  <!-- ======================================================================== -->
+  <div class="modal-overlay hidden" id="ledger-modal">
+    <div class="modal-card modal-lg">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>📊</span> <span>Session Ledger (Rebound-Aware Accounting)</span>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-ledger">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:12px;">
+          <div style="background:var(--surface-2); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--border);">
+            <div style="font-size:0.75rem; color:var(--muted);">TOTAL USED</div>
+            <div style="font-size:1.3rem; font-weight:700; color:var(--text);" id="sl-used-wh">0.00 Wh</div>
+          </div>
+          <div style="background:var(--surface-2); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--border);">
+            <div style="font-size:0.75rem; color:var(--muted);">BASELINE IF 1080p MAX</div>
+            <div style="font-size:1.3rem; font-weight:700; color:var(--muted);" id="sl-max-wh">0.00 Wh</div>
+          </div>
+          <div style="background:var(--surface-2); padding:12px; border-radius:var(--radius-sm); border:1px solid var(--success);">
+            <div style="font-size:0.75rem; color:var(--success);">TOTAL SAVED</div>
+            <div style="font-size:1.3rem; font-weight:700; color:var(--success);" id="sl-saved-wh">0.00 Wh (0%)</div>
+          </div>
+        </div>
+
+        <div style="max-height:280px; overflow-y:auto; margin-top:10px;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Subject</th>
+                <th>Type</th>
+                <th>Used</th>
+                <th>Baseline</th>
+                <th>Saved</th>
+              </tr>
+            </thead>
+            <tbody id="session-table-body">
+              <tr>
+                <td colspan="6" style="text-align:center; color:var(--muted);">No generations in this session yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="inline-action-btn" id="btn-close-ledger-footer">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================== -->
+  <!-- LIMITATIONS MODAL                                                        -->
+  <!-- ======================================================================== -->
+  <div class="modal-overlay hidden" id="limitations-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🛡️</span> <span>Engineering Limitations</span>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-limitations">✕</button>
+      </div>
+      <div class="modal-body" style="font-size:0.88rem; line-height:1.6; color:var(--text);">
+        <p><strong>1. Hardware Discrepancies:</strong> Inference energy values represent mathematical models calibrated against published MLPerf benchmarks. Physical draw differs depending on GPU architecture and node power governors.</p>
+        <p><strong>2. Attribution Integrity:</strong> Licensed photos from Wikimedia Commons and Openverse are served strictly under open terms (CC0, Public Domain, CC BY, CC BY-SA), preserving full author attribution and source hyperlinks.</p>
+        <p><strong>3. Strict Photorealism:</strong> The AI generation pipeline enforces DSLR physical rendering parameters and removes cartoon artifacts to maintain realistic visual standards.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="inline-action-btn accent" id="btn-close-limitations-confirm">Understood</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================== -->
+  <!-- SETTINGS & IMAGE SOURCES MODAL                                           -->
+  <!-- ======================================================================== -->
+  <div class="modal-overlay hidden" id="settings-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>⚙️</span> <span>Settings & Image Sources</span>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-settings">✕</button>
+      </div>
+      <div class="modal-body" style="font-size:0.88rem; line-height:1.6; color:var(--text);">
+        <p style="color:var(--muted); margin-bottom:12px;">
+          FocusGen runs with <strong>zero required API keys</strong> for web image search. Keyless open sources are enabled by default.
+        </p>
+
+        <!-- Demo Mode Toggle -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 14px; margin-bottom:12px;">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:700; color:var(--text); font-size:0.86rem; display:flex; align-items:center; gap:6px;">
+                <span>🎪 Demo mode</span>
+                <span class="mode-pill-badge" id="badge-demo-mode" style="background:rgba(245, 158, 11, 0.15); color:#F59E0B; border:1px solid rgba(245, 158, 11, 0.3); display:none;">Active</span>
+              </div>
+              <div style="font-size:0.8rem; color:var(--muted); margin-top:2px;">
+                Forces web-photo-only mode to present and test without spending any AI quota or allocation.
+              </div>
+            </div>
+            <label class="toggle-switch" style="margin-left:12px; cursor:pointer;" title="Toggle Demo mode">
+              <input type="checkbox" id="toggle-demo-mode">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Keyless Sources -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 14px; margin-bottom:12px;">
+          <div style="font-weight:700; color:var(--accent); font-size:0.86rem; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between;">
+            <span>🌐 Keyless Web Search</span>
+            <span class="mode-pill-badge" style="background:rgba(var(--accent-rgb), 0.15); color:var(--accent); border:1px solid var(--accent);">Active · No Key Needed</span>
+          </div>
+          <div style="font-size:0.82rem; color:var(--text); display:flex; flex-direction:column; gap:4px;">
+            <div>• <strong>Wikimedia Commons API:</strong> Millions of public domain & CC licensed photographs with author attribution.</div>
+            <div>• <strong>Openverse API:</strong> Curated creative commons library filtered strictly for reusable photography.</div>
+          </div>
+        </div>
+
+        <!-- AI Fallback -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 14px; margin-bottom:12px;">
+          <div style="font-weight:700; color:var(--accent-2); font-size:0.86rem; margin-bottom:6px; display:flex; align-items:center; justify-content:space-between;">
+            <span>🤖 AI Fallback Generator</span>
+            <span class="mode-pill-badge" id="settings-status-gemini" style="color:var(--accent-2);">Configured</span>
+          </div>
+          <div style="font-size:0.82rem; color:var(--text);">
+            Multi-provider photorealism engine (Cloudflare FLUX / Gemini). Used when web photos are unavailable or when requested.
+          </div>
+        </div>
+
+        <!-- Reset Inference Preferences -->
+        <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 14px;">
+          <div style="font-weight:700; color:var(--text); font-size:0.86rem; margin-bottom:4px;">
+            Inference Learned Preferences
+          </div>
+          <div style="font-size:0.8rem; color:var(--muted); margin-bottom:8px;">
+            Reset your saved keyword overrides and tier adaptations.
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <button type="button" class="inline-action-btn" id="btn-reset-preferences" style="color:var(--danger); border-color:var(--danger);">
+              Reset my preferences
+            </button>
+            <span id="lbl-reset-preferences-status" style="font-size:0.78rem; color:var(--success); display:none;">Preferences reset!</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="inline-action-btn accent" id="btn-close-settings-confirm">Got It</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======================================================================== -->
+  <!-- DIAGNOSE AI MODAL                                                        -->
+  <!-- ======================================================================== -->
+  <div class="modal-overlay hidden" id="diagnose-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>🩺</span> <span>AI Engine Diagnostics</span>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-diagnose">✕</button>
+      </div>
+      <div class="modal-body" style="font-size:0.88rem; line-height:1.6; color:var(--text);">
+        <!-- Allocation Exhausted Live Countdown Banner -->
+        <div id="diag-blocked-banner" class="hidden" style="background:rgba(239, 68, 68, 0.12); border:1px solid rgba(239, 68, 68, 0.35); border-radius:var(--radius-md); padding:12px 14px; margin-bottom:12px;">
+          <div style="font-weight:700; color:#EF4444; font-size:0.85rem; display:flex; align-items:center; gap:6px; margin-bottom:4px;">
+            <span>⏳</span> <span>Daily Free AI Allocation Exhausted</span>
+          </div>
+          <div id="diag-blocked-message" style="font-size:0.82rem; color:var(--text); line-height:1.5;">
+            Daily free AI allocation is used up. It resets at 00:00 UTC (5:30 AM IST).
+          </div>
+          <div id="diag-blocked-countdown" style="font-family:monospace; font-size:0.86rem; font-weight:700; color:#F59E0B; margin-top:6px;">
+            Countdown: --:--:--
+          </div>
+        </div>
+
+        <!-- Model Selection & Test Button from .env -->
+        <div style="background:var(--surface-2); border:1px solid var(--border); border-radius:var(--radius-md); padding:10px 14px; margin-bottom:12px;">
+          <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.05em; color:var(--muted); font-weight:700; margin-bottom:6px;">Select Model from .env</div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <select id="diag-model-select" style="flex:1; background:var(--bg); border:1px solid var(--border); border-radius:var(--radius-sm); color:var(--text); padding:6px 10px; font-size:0.82rem; font-family:monospace;">
+              <option value="@cf/black-forest-labs/flux-1-schnell">@cf/black-forest-labs/flux-1-schnell</option>
+            </select>
+            <button type="button" class="inline-action-btn accent" id="btn-test-model" style="white-space:nowrap; padding:6px 14px; font-size:0.82rem; font-weight:600;">
+              ⚡ Test model
+            </button>
+          </div>
+        </div>
+
+        <div id="diagnose-loading" style="text-align:center; padding:18px; color:var(--muted);">Probing active AI provider...</div>
+
+        <div id="diagnose-content" class="hidden">
+          <div style="background:var(--surface); border:1px solid var(--border); border-radius:var(--radius-md); padding:12px 14px; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:700; color:var(--accent);">Active Provider:</span>
+              <span class="mode-pill-badge" id="diag-provider" style="color:var(--text);">Cloudflare</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:700; color:var(--text);">Tested Model:</span>
+              <span id="diag-model" style="font-family:monospace; font-size:0.8rem; color:var(--muted);">@cf/black-forest-labs/flux-1-schnell</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:700; color:var(--text);">Credentials:</span>
+              <span id="diag-key-status" class="mode-pill-badge">Loaded</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:700; color:var(--text);">Exact HTTP Status:</span>
+              <span id="diag-http-status" class="mode-pill-badge" style="font-family:monospace; font-weight:700;">--</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:700; color:var(--text);">Category:</span>
+              <span id="diag-category-badge" class="mode-pill-badge" style="font-weight:600;">--</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-weight:700; color:var(--text);">Model Reachable:</span>
+              <span id="diag-reach-status" class="mode-pill-badge">Reachable</span>
+            </div>
+          </div>
+
+          <div style="background:var(--surface-2); padding:12px 14px; border-radius:var(--radius-sm); border-left:3px solid var(--accent);" id="diag-message-box">
+            <div style="font-size:0.75rem; text-transform:uppercase; letter-spacing:0.04em; font-weight:700; color:var(--muted); margin-bottom:4px;" id="diag-box-label">Real Cloudflare Response / Diagnosis</div>
+            <div id="diag-message" style="font-size:0.82rem; color:var(--text); word-break:break-word;">Operating normally.</div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="inline-action-btn" id="btn-retest-diagnose">Retest Default</button>
+        <button type="button" class="inline-action-btn accent" id="btn-close-diagnose-confirm">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Document Upload Ideas Modal -->
+  <div class="modal-overlay hidden" id="doc-ideas-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>📄</span> <span id="doc-ideas-filename">Uploaded Document</span>
+        </div>
+        <button type="button" class="btn-close-modal" id="btn-close-doc-ideas">✕</button>
+      </div>
+      <div class="modal-body">
+        <div style="font-size:0.8rem; color:var(--muted); background:var(--surface-2); padding:8px 12px; border-radius:var(--radius-sm);" id="doc-ideas-snippet">
+          Text extracted from document.
+        </div>
+        <div style="font-weight:600; font-size:0.9rem; color:var(--text); margin-top:6px;">
+          Suggested Visual Ideas for this Document:
+        </div>
+        <div id="doc-ideas-container" style="display:flex; flex-direction:column; gap:8px;">
+          <!-- 3 ideas injected dynamically -->
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="inline-action-btn" id="btn-close-doc-ideas-footer">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="estimate.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

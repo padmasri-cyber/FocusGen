@@ -1,0 +1,165 @@
+{
+  "version": "1.0",
+  "purposes": {
+    "chat": {
+      "id": "chat",
+      "title": "Phone chat",
+      "tier": "Sketch",
+      "size": "640×360",
+      "width": 640,
+      "height": 360,
+      "baseWeight": 1.0,
+      "desc": "Mobile screen, DP & Chat"
+    },
+    "school": {
+      "id": "school",
+      "title": "School project",
+      "tier": "Standard",
+      "size": "1024×576",
+      "width": 1024,
+      "height": 576,
+      "baseWeight": 1.0,
+      "desc": "Slides, reports & classroom presentations"
+    },
+    "poster": {
+      "id": "poster",
+      "title": "Poster",
+      "tier": "Detailed",
+      "size": "1280×720",
+      "width": 1280,
+      "height": 720,
+      "baseWeight": 1.0,
+      "desc": "Wall display & wide viewing"
+    },
+    "print": {
+      "id": "print",
+      "title": "Print",
+      "tier": "Max",
+      "size": "1920×1080",
+      "width": 1920,
+      "height": 1080,
+      "baseWeight": 1.2,
+      "desc": "High-density physical print 300 DPI"
+    }
+  },
+  "tierOrder": ["Sketch", "Standard", "Detailed", "Max"],
+  "tierToPurpose": {
+    "Sketch": "chat",
+    "Standard": "school",
+    "Detailed": "poster",
+    "Max": "print"
+  },
+  "purposeToTier": {
+    "chat": "Sketch",
+    "school": "Standard",
+    "poster": "Detailed",
+    "print": "Max"
+  },
+  "keywords": {
+    "chat": [
+      { "word": "whatsapp", "weight": 0.95 },
+      { "word": "status", "weight": 0.90 },
+      { "word": "story", "weight": 0.85 },
+      { "word": "dp", "weight": 0.95 },
+      { "word": "profile picture", "weight": 0.90 },
+      { "word": "profile pic", "weight": 0.90 },
+      { "word": "pfp", "weight": 0.90 },
+      { "word": "chat", "weight": 0.80 },
+      { "word": "instagram", "weight": 0.80 },
+      { "word": "insta", "weight": 0.80 },
+      { "word": "reel", "weight": 0.80 },
+      { "word": "social", "weight": 0.70 },
+      { "word": "mobile", "weight": 0.75 },
+      { "word": "phone", "weight": 0.75 },
+      { "word": "status-ku", "weight": 0.95 },
+      { "word": "dp-ku", "weight": 0.95 },
+      { "word": "chat-ku", "weight": 0.85 },
+      { "word": "whatsapp-ku", "weight": 0.95 },
+      { "word": "insta-ku", "weight": 0.85 },
+      { "word": "வாட்ஸ்அப்", "weight": 0.95 },
+      { "word": "ஸ்டேட்டஸ்", "weight": 0.95 },
+      { "word": "டிபி", "weight": 0.95 },
+      { "word": "அரட்டை", "weight": 0.85 },
+      { "word": "மொபைல்", "weight": 0.80 }
+    ],
+    "school": [
+      { "word": "slide", "weight": 0.95 },
+      { "word": "slides", "weight": 0.95 },
+      { "word": "ppt", "weight": 0.95 },
+      { "word": "presentation", "weight": 0.90 },
+      { "word": "project", "weight": 0.85 },
+      { "word": "assignment", "weight": 0.90 },
+      { "word": "school", "weight": 0.85 },
+      { "word": "college", "weight": 0.80 },
+      { "word": "report", "weight": 0.85 },
+      { "word": "thumbnail", "weight": 0.80 },
+      { "word": "classroom", "weight": 0.80 },
+      { "word": "study", "weight": 0.75 },
+      { "word": "homework", "weight": 0.85 },
+      { "word": "slide-ku", "weight": 0.95 },
+      { "word": "ppt-ku", "weight": 0.95 },
+      { "word": "project-ku", "weight": 0.90 },
+      { "word": "assignment-ku", "weight": 0.90 },
+      { "word": "school-ku", "weight": 0.85 },
+      { "word": "ஸ்லைடு", "weight": 0.95 },
+      { "word": "பிரசன்டேஷன்", "weight": 0.95 },
+      { "word": "திட்டம்", "weight": 0.85 },
+      { "word": "பள்ளி", "weight": 0.85 },
+      { "word": "கல்லூரி", "weight": 0.80 }
+    ],
+    "poster": [
+      { "word": "poster", "weight": 0.95 },
+      { "word": "banner", "weight": 0.85 },
+      { "word": "flyer", "weight": 0.90 },
+      { "word": "notice", "weight": 0.85 },
+      { "word": "cover", "weight": 0.75 },
+      { "word": "wallpaper", "weight": 0.80 },
+      { "word": "wall", "weight": 0.70 },
+      { "word": "fest", "weight": 0.80 },
+      { "word": "exhibition", "weight": 0.85 },
+      { "word": "billboard", "weight": 0.75 },
+      { "word": "flex board", "weight": 0.80 },
+      { "word": "poster venum", "weight": 0.95 },
+      { "word": "poster-ku", "weight": 0.95 },
+      { "word": "banner-ku", "weight": 0.85 },
+      { "word": "fest-ku", "weight": 0.85 },
+      { "word": "சுவரொட்டி", "weight": 0.95 },
+      { "word": "பேனர்", "weight": 0.90 },
+      { "word": "போஸ்டர்", "weight": 0.95 },
+      { "word": "சுவர்", "weight": 0.75 }
+    ],
+    "print": [
+      { "word": "print", "weight": 1.0 },
+      { "word": "printing", "weight": 1.0 },
+      { "word": "a4", "weight": 0.95 },
+      { "word": "a3", "weight": 0.95 },
+      { "word": "flex", "weight": 0.90 },
+      { "word": "large print", "weight": 1.0 },
+      { "word": "hard copy", "weight": 0.95 },
+      { "word": "300 dpi", "weight": 1.0 },
+      { "word": "paper print", "weight": 1.0 },
+      { "word": "print pannanum", "weight": 1.0 },
+      { "word": "print-ku", "weight": 1.0 },
+      { "word": "அச்சு", "weight": 1.0 },
+      { "word": "அச்சிட", "weight": 1.0 },
+      { "word": "அச்சிடுதல்", "weight": 1.0 }
+    ]
+  },
+  "qualityModifiers": {
+    "lower": [
+      "quick", "draft", "rough", "fast", "preview", "simple", "low res",
+      "சீக்கிரம்", "ரஃப்", "சுருக்கம்", "podhum"
+    ],
+    "raise": [
+      "detailed", "sharp", "professional", "ultra", "4k", "hd", "high quality", "macro",
+      "நுணுக்கமான", "துல்லியமான", "பெரிய", "super"
+    ]
+  },
+  "modeBiases": {
+    "student": { "school": 0.35, "chat": 0.05 },
+    "work": { "poster": 0.25, "chat": 0.15 },
+    "kids": { "chat": 0.25, "school": 0.15 },
+    "easy": { "chat": 0.20 },
+    "normal": {}
+  }
+}
