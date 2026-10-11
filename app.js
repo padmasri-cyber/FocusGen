@@ -99,32 +99,27 @@ const state = {
 // ============================================================================
 // 2b. BACKEND CONNECTIVITY & API BASE RESOLUTION
 // ============================================================================
-const API_BASE = (window.location.protocol === 'file:' || (window.location.port && window.location.port !== '3000'))
-  ? 'http://localhost:3000'
-  : '';
+// Use relative path for all API endpoints so FocusGen works on any domain or port
+const API_BASE = '';
 
-// Intercept fetch to guarantee credentials: 'include' and API_BASE prefix
+// Intercept fetch to guarantee credentials: 'include'
 const _origFetch = window.fetch;
 window.fetch = function(url, options = {}) {
-  let targetUrl = url;
-  if (typeof url === 'string' && url.startsWith('/api/')) {
-    targetUrl = (API_BASE ? API_BASE : '') + url;
-  }
   const mergedOptions = {
     credentials: 'include',
     ...options
   };
-  return _origFetch(targetUrl, mergedOptions);
+  return _origFetch(url, mergedOptions);
 };
 
-// DEV Logger (active on localhost/127.0.0.1; never logs passwords or secrets)
-const IS_DEV = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' || window.location.protocol === 'file:';
+// Logger (never logs passwords or secrets)
+const IS_DEV = false;
 function devLog(step, details) {
   if (IS_DEV) {
     if (details !== undefined) {
-      console.log(`%c[FocusGen DEV] %c${step}`, 'color: #3B82F6; font-weight: bold;', 'color: #EAF1FB;', details);
+      console.log(`%c[FocusGen] %c${step}`, 'color: #3B82F6; font-weight: bold;', 'color: #EAF1FB;', details);
     } else {
-      console.log(`%c[FocusGen DEV] %c${step}`, 'color: #3B82F6; font-weight: bold;', 'color: #EAF1FB;');
+      console.log(`%c[FocusGen] %c${step}`, 'color: #3B82F6; font-weight: bold;', 'color: #EAF1FB;');
     }
   }
 }
@@ -1533,7 +1528,7 @@ async function sendMessage(rawText, chosenPurposeOrOpts = null) {
       renderChatError({
         type: 'unreachable',
         title: 'Server Not Reachable',
-        message: 'Could not connect to the FocusGen server at http://localhost:3000. Please verify the server is running.',
+        message: 'Could not connect to the FocusGen server. Please verify the server is running.',
         actionLabel: 'Try Reconnecting',
         action: () => sendMessage(text, purposeToUse)
       });

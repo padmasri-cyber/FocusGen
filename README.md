@@ -1,136 +1,145 @@
 # FocusGen 🌿📷
 
-**Eco-Adaptive AI Image Generator & Licensed Visual Intelligence Chatbot**
+**Eco-Adaptive Visual Intelligence Platform & Keyless AI Image Assistant**
 
-FocusGen is a production application designed around the concept of **"Focus + Energy + Photorealism"**. It saves up to 99.9% energy by prioritizing free, reusable licensed photographs from keyless databases (Wikimedia Commons & Openverse) and purpose-adapted Sharp compression before falling back to photorealistic DSLR AI image synthesis.
-
----
-
-## Architecture Overview
-
-FocusGen is divided into an Express-based Node.js backend with SQLite persistence and a responsive, ChatGPT-style frontend client:
-
-```
-focusgen/
-├── server.js           # Express.js REST API server & static host
-├── db.js               # SQLite database layer (better-sqlite3)
-├── webSearch.js        # Keyless search engine (Wikimedia Commons + Openverse)
-├── estimate.js         # Eco mathematical energy & carbon cost engine
-├── app.js              # Client application & conversational chatbot logic
-├── index.html          # ChatGPT-style web interface & modals
-├── style.css           # Modern dark & light blue theme design system
-├── test_suite.js       # 11-step integration & verification test suite
-├── start.bat           # One-click Windows backend launcher
-├── start.sh            # One-click macOS / Linux launcher
-├── data/
-│   └── focusgen.db     # SQLite persistence database
-└── uploads/            # User-uploaded documents and images
-```
+FocusGen is an eco-adaptive visual intelligence web application built on the principle of **"Focus + Energy + Photorealism"**. It saves up to 99.9% energy by prioritizing free, reusable licensed photographs from keyless databases (Wikimedia Commons & Openverse), purpose-adapted Sharp compression, and smart focus clarity region detection before falling back to photorealistic DSLR AI image generation.
 
 ---
 
-## Backend Services & Modules
+## Features
 
-### 1. Web-First Keyless Image Search ([`webSearch.js`](webSearch.js))
-- **Wikimedia Commons API**: Queries `commons.wikimedia.org` and `en.wikipedia.org` for authentic public domain & Creative Commons photographs.
-- **Openverse API**: Parallel query against millions of open-licensed photographs.
-- **Strict Quality Filtering**: Rejects non-photographic artifacts (drawings, logos, maps, cliparts, cartoons, icons) and enforces minimum resolution per purpose.
-- **Reusable Licenses**: Accepts only CC0, Public Domain, CC BY, and CC BY-SA (rejects No-Derivatives licenses since images are resized and compressed).
-- **24-Hour Memory Cache**: Prevents duplicate network roundtrips.
-
-### 2. SQLite Database ([`db.js`](db.js))
-- Automated schema migrations stored at `data/focusgen.db`.
-- **Tables**: `users`, `chats`, `messages`, `uploads`.
-- Supports user authentication, guest limits (5 free generations), chat history persistence, and user settings (theme, mode, language).
-
-### 3. Smart Compress & Sharp Engine ([`server.js`](server.js))
-- Server-side image resizing and compression powered by **Sharp**.
-- Output formats: optimized WebP with tailored compression quality per purpose (`chat` 360p, `school` 720p, `poster` 900p, `print` 1080p).
-- Direct SVG banner compositing via `GET /api/download-attributed` to embed permanent copyright and attribution on downloaded images.
-
-### 4. Eco Energy & Carbon Engine ([`estimate.js`](estimate.js))
-- Mathematical calculation of Wh, execution duration, and avoided CO₂ emissions.
-- Calibrated against GPU MLPerf benchmarks: `Cost(Wh) = Σ zone[ pixels × steps × ENERGY_PER_PIXEL_STEP ] + overhead`.
-- Every image result displays a compact cost chip: `Estimated 0.006 Wh · 0.3 s · 99.9% less than Max (1080p)`.
-
-### 5. Document & File Analysis ([`server.js`](server.js))
-- Uploads handled via **Multer**.
-- PDF text extraction with **pdf-parse** and Word documents with **mammoth**.
-- Extracted text is analyzed to suggest 3 visual photography prompt concepts.
+- **Keyless AI Generation**: Built-in support for Pollinations FLUX (`IMAGE_PROVIDER=pollinations`) requiring **no API keys**.
+- **15-Second Spacing Queue**: Automatic server-side queueing prevents rate-limiting on anonymous tiers and displays real-time queue position in chat.
+- **Instant Dual-Tier Caching**: In-memory and disk cache (`data/ai_cache/`) keyed by `(word, purpose, size)`. Cached requests load in **<10ms**.
+- **Smart Focus Clarity Regions**: High clarity on critical subjects and energy-saving compression on backgrounds using sharp saliency detection.
+- **Web-First Fallback Chain**: Pollinations / Cloudflare $\rightarrow$ Wikimedia Commons & Openverse licensed photos. Never crashes, never displays raw errors.
+- **Purpose-Adapted Dimensions**: Automatically sizes to minimum required dimensions:
+  - Phone chat: **640×360**
+  - Project/School: **1024×576**
+  - Poster: **1280×720**
+  - Print: **1920×1080**
+- **Demo Mode**: Instant presentation mode using only cached images and licensed web photos with zero external AI calls.
+- **Honest Energy & Cost Estimation**: Transparent energy estimations and source attribution on every image (`Pollinations (AI)`, `Cloudflare (AI)`, `Web photo`, or `Cached`).
 
 ---
 
-## Quick Start / Running the Backend
+## Local Development
 
-### Windows (One-Click)
-Double-click [`start.bat`](start.bat) in the project directory. It launches the backend server at `http://localhost:3000` and opens your default browser automatically.
+### 1. Prerequisites
+- **Node.js**: Version 18 or higher (`node -v`)
+- **npm**: Version 8 or higher (`npm -v`)
 
-### Terminal (npm)
-1. Install dependencies (if not already installed):
-   ```bash
-   npm install
-   ```
-2. Start the backend:
-   ```bash
-   npm start
-   ```
-   Or for development:
-   ```bash
-   npm run dev
-   ```
-3. Open your browser at:
-   ```
-   http://localhost:3000
-   ```
-
-### Running Tests
-Run the comprehensive 11-step integration test suite:
+### 2. Installation
+Clone the repository and install all dependencies:
 ```bash
-npm test
+git clone https://github.com/padmasri-cyber/FocusGen.git
+cd FocusGen
+npm install
+```
+
+### 3. Environment Setup
+Copy the template environment file:
+```bash
+cp .env.example .env
+```
+*(Even with all variables empty, FocusGen runs out-of-the-box using the keyless Pollinations provider and licensed photo search).*
+
+### 4. Demo Warmup (Pre-Caching)
+Pre-generate demo requests (`cake`, `temple`, `tiger`) so they load instantly:
+```bash
+npm run warmup
+```
+
+### 5. Start the Server
+```bash
+npm start
+```
+Access the application at:
+```
+http://localhost:3000
 ```
 
 ---
 
-## REST API Reference
+## Environment Variables Reference
 
-| Method | Endpoint | Description | Auth Required |
-|---|---|---|---|
-| `GET` | `/api/health` | System status, version, uptime, and database check | No |
-| `POST` | `/api/chat` | Unified chat workflow (search, greetings, AI generation, cost chip) | No |
-| `GET` | `/api/config` | Provider configuration and active AI model info | No |
-| `POST` | `/api/auth/signup` | Register new user account (`email`, `password`) | No |
-| `POST` | `/api/auth/login` | Login and set HttpOnly JWT session cookie | No |
-| `POST` | `/api/auth/guest` | Start a quick guest session (up to 5 generations) | No |
-| `POST` | `/api/auth/logout` | Clear session cookie | No |
-| `GET` | `/api/auth/me` | Retrieve current authenticated user profile | Yes |
-| `POST` | `/api/user/settings` | Save user preferences (theme, language, mode) | Yes |
-| `GET` | `/api/chats` | List user chat sessions | Yes |
-| `POST` | `/api/chats` | Create a new chat session | Yes |
-| `GET` | `/api/chats/:id` | Fetch chat details and message history | Yes |
-| `PATCH` | `/api/chats/:id` | Rename chat session | Yes |
-| `DELETE` | `/api/chats/:id` | Delete chat session | Yes |
-| `POST` | `/api/chats/:id/messages` | Append message to chat | Yes |
-| `POST` | `/api/search-licensed` | Keyless search on Wikimedia Commons & Openverse | No |
-| `POST` | `/api/compress` | Sharp server-side resizing & WebP compression | No |
-| `GET` | `/api/download-attributed` | Download image with embedded attribution banner | No |
-| `POST` | `/api/generate` | AI photorealistic generation via Google Gemini | Optional |
-| `POST` | `/api/upload` | Upload and extract visual ideas from PDF/Word/Image | Optional |
-| `GET` | `/api/uploads` | Retrieve user uploads history | Yes |
-| `DELETE` | `/api/uploads/:id` | Delete uploaded file | Yes |
+All environment variables can be configured in `.env` (or via the host dashboard in production):
+
+| Variable | Default | Description |
+|---|---|---|
+| `PORT` | `3000` | Port on which the Express server listens. |
+| `NODE_ENV` | `development` | Set to `production` on live hosting for secure cookies and optimized headers. |
+| `JWT_SECRET` | Auto fallback | Secret key used for signing session JWT authentication tokens. |
+| `IMAGE_PROVIDER` | `pollinations` | Primary AI provider: `pollinations` (keyless Flux), `cloudflare`, `gemini`, or `none`. |
+| `CLOUDFLARE_ACCOUNT_ID` | *Empty* | Cloudflare account ID (optional, for Cloudflare Workers AI). |
+| `CLOUDFLARE_API_TOKEN` | *Empty* | Cloudflare API token with Workers AI permissions. |
+| `CLOUDFLARE_IMAGE_MODEL` | `@cf/black-forest-labs/flux-1-schnell` | Model override for Cloudflare Workers AI. |
+| `GEMINI_API_KEY` | *Empty* | Google Gemini API key (optional). |
+| `IMAGE_MODEL` | `gemini-2.5-flash-image` | Model identifier for Gemini AI. |
+| `DB_PATH` | `./data/focusgen.db` | File path for SQLite persistence database. |
+| `GOOGLE_CLIENT_ID` | *Empty* | Google OAuth Client ID for sign-in (optional). |
+| `CORS_ORIGIN` | *Same-origin* | Comma-separated list of allowed CORS origins or `*`. Defaults to same-origin. |
 
 ---
 
-## Environment Variables (`.env`)
+## Deploying on Render (Free Web Service)
 
-```ini
-PORT=3000
-JWT_SECRET=your_jwt_secret_key_here
+FocusGen includes a ready-to-use [`render.yaml`](render.yaml) blueprint for one-click deployment.
 
-# Google Gemini API Key (Optional AI generation fallback)
-GEMINI_API_KEY=your_key_here
-IMAGE_MODEL=gemini-2.5-flash-image
+### Method A: Blueprint Deployment
+1. Push your repository to GitHub.
+2. Log in to [Render Dashboard](https://dashboard.render.com).
+3. Click **New +** $\rightarrow$ **Blueprint**.
+4. Connect `https://github.com/padmasri-cyber/FocusGen.git`.
+5. Render automatically configures:
+   - **Environment**: Node
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+   - **Health Check Path**: `/api/health`
+6. Click **Apply**.
 
-# (Optional) Google OAuth
-GOOGLE_CLIENT_ID=
-```
-*Note: Image search runs 100% keyless using built-in Wikimedia Commons and Openverse integrations.*
+### Method B: Manual Web Service
+1. In the Render Dashboard, click **New +** $\rightarrow$ **Web Service**.
+2. Connect your GitHub repository.
+3. Configure the settings:
+   - **Runtime**: `Node`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+   - **Health Check Path**: `/api/health`
+4. In **Environment Variables**, add:
+   - `NODE_ENV`: `production`
+   - `IMAGE_PROVIDER`: `pollinations`
+   - `JWT_SECRET`: *(A long random string)*
+
+---
+
+## Free-Tier Hosting Limits & Behavior
+
+When deploying on Render's free tier, keep the following host limitations in mind:
+
+> [!WARNING]
+> **Ephemeral Storage & Database Resets**:
+> Free cloud instances feature ephemeral disks. Any time the web service restarts, sleeps, or redeploys, files written to disk (including the SQLite database at `./data/focusgen.db` and upload folders) will reset. FocusGen is architected to safely handle missing or reset databases by **automatically recreating all tables and schemas on startup** without throwing errors. For permanent persistence across restarts, attach a persistent Render Disk or configure an external database.
+
+> [!NOTE]
+> **Inactivity Sleep (Spin-down)**:
+> Free web services spin down after 15 minutes of inactivity. When a new visitor accesses your deployed URL, Render spins the container back up. This initial "cold start" request may take 30 to 50 seconds to respond. Subsequent requests respond instantly.
+
+> [!TIP]
+> **Pollinations Rate Limiting**:
+> Pollinations anonymous tier operates with approximately one request every 15 seconds. FocusGen handles this transparently with an automated server-side queue ([`aiQueue.js`](aiQueue.js)) that displays the user's position in queue while instantly serving licensed web photos in the foreground.
+
+---
+
+## REST API Endpoints
+
+- `GET /api/health` - Health check status (`{ "status": "ok", ... }`).
+- `POST /api/chat` - Unified chat query (instant web photos + background AI generation).
+- `GET /api/ai-job/:id` - Background AI generation queue polling endpoint.
+- `POST /api/auth/signup` - Register a new account.
+- `POST /api/auth/login` - User login with HttpOnly secure session cookie.
+- `POST /api/auth/guest` - Ephemeral guest session (up to 5 free generations).
+- `POST /api/auth/logout` - Clear session authentication cookies.
+- `GET /api/auth/me` - Authenticated user profile and settings.
+- `POST /api/search-licensed` - Direct search on Wikimedia Commons & Openverse.
+- `POST /api/focus/apply` - Run smart focus clarity pipeline with Sharp.

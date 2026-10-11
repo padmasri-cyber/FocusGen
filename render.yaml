@@ -1,0 +1,34 @@
+services:
+  - type: web
+    name: focusgen
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: IMAGE_PROVIDER
+        value: pollinations
+      - key: DB_PATH
+        value: ./data/focusgen.db
+      - key: JWT_SECRET
+        generateValue: true
+      - key: CLOUDFLARE_ACCOUNT_ID
+        sync: false
+      - key: CLOUDFLARE_API_TOKEN
+        sync: false
+      - key: CLOUDFLARE_IMAGE_MODEL
+        sync: false
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: IMAGE_MODEL
+        sync: false
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false

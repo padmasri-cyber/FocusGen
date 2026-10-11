@@ -117,8 +117,26 @@ function fetchBuffer(url, maxRedirects = 5, timeoutMs = 20000) {
 }
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+app.set('trust proxy', 1);
+
+const PORT = parseInt(process.env.PORT || '3000', 10);
+const HOST = process.env.HOST || '0.0.0.0';
 const JWT_SECRET = process.env.JWT_SECRET || 'focusgen_default_fallback_jwt_secret_2026';
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Allowed CORS origins from environment variable (default: same-origin)
+const allowedOrigins = (process.env.CORS_ORIGIN || process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map(o => o.trim())
+  .filter(Boolean);
+
+// Production-ready cookie configuration
+const authCookieOptions = {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? (allowedOrigins.length > 0 ? 'none' : 'lax') : 'lax',
+  maxAge: 7 * 24 * 60 * 60 * 1000
+};
 
 // Create uploads directory
 const uploadsBaseDir = path.join(__dirname, 'uploads');
@@ -126,17 +144,27 @@ if (!fs.existsSync(uploadsBaseDir)) {
   fs.mkdirSync(uploadsBaseDir, { recursive: true });
 }
 
-// CORS Middleware for cross-origin local dev & multi-port access
+// CORS Middleware (reads from CORS_ORIGIN env var, defaults to same-origin)
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (origin) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  } else {
-    res.setHeader('Access-Control-Allow-Origin', '*');
+    let allow = false;
+    if (allowedOrigins.length > 0) {
+      allow = allowedOrigins.includes('*') || allowedOrigins.includes(origin);
+    } else {
+      // Default to same-origin
+      const host = req.headers.host;
+      if (host && origin.includes(host)) {
+        allow = true;
+      }
+    }
+    if (allow) {
+      res.setHeader('Access-Control-Allow-Origin', origin);
+      res.setHeader('Access-Control-Allow-Credentials', 'true');
+    }
   }
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
   if (req.method === 'OPTIONS') {
     return res.sendStatus(204);
   }
@@ -152,12 +180,12 @@ app.use(express.static(path.join(__dirname)));
 // GET /api/health - System Health Check
 app.get('/api/health', (req, res) => {
   res.json({
-    status: 'online',
+    status: 'ok',
     version: '2.0.0',
     port: PORT,
     database: 'sqlite_connected',
-    providers: ['Wikimedia Commons', 'Openverse'],
-    aiEngine: process.env.IMAGE_MODEL || 'gemini-2.5-flash-image',
+    providers: ['Wikimedia Commons', 'Openverse', 'Pollinations FLUX'],
+    aiEngine: process.env.IMAGE_PROVIDER || 'pollinations',
     compressionEngine: 'sharp',
     uptime: Math.floor(process.uptime())
   });
@@ -258,11 +286,7 @@ app.post('/api/auth/signup', async (req, res) => {
     { expiresIn: '7d' }
   );
 
-  res.cookie('focusgen_token', token, {
-    httpOnly: true,
-    sameSite: 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000
-  });
+  res.cookie('focusgen_token', token, authCookieOptions);
 
   res.json({
     success: true,
@@ -299,11 +323,7 @@ app.post('/api/auth/login', loginLimiter, async (req, res) => {
     { expiresIn: '7d' }
   );
 
-  res.cookie('focusgen_token', token, {
-    httpOnly: true,
-    sameSite: 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000
-  });
+  res.cookie('focusgen_token', token, authCookieOptions);
 
   res.json({
     success: true,
@@ -340,11 +360,7 @@ app.post('/api/auth/guest', (req, res) => {
     { expiresIn: '7d' }
   );
 
-  res.cookie('focusgen_token', token, {
-    httpOnly: true,
-    sameSite: 'lax',
-    maxAge: 7 * 24 * 60 * 60 * 1000
-  });
+  res.cookie('focusgen_token', token, authCookieOptions);
 
   res.json({
     success: true,
@@ -377,7 +393,11 @@ app.get('/api/auth/me', (req, res) => {
 
 // POST /api/auth/logout
 app.post('/api/auth/logout', (req, res) => {
-  res.clearCookie('focusgen_token');
+  res.clearCookie('focusgen_token', {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? (allowedOrigins.length > 0 ? 'none' : 'lax') : 'lax'
+  });
   res.json({ success: true });
 });
 
@@ -1547,11 +1567,7 @@ app.post('/api/chat', async (req, res) => {
       JWT_SECRET,
       { expiresIn: '7d' }
     );
-    res.cookie('focusgen_token', guestToken, {
-      httpOnly: true,
-      sameSite: 'lax',
-      maxAge: 7 * 24 * 60 * 60 * 1000
-    });
+    res.cookie('focusgen_token', guestToken, authCookieOptions);
   }
 
   // Enforce guest generation limit
@@ -2518,8 +2534,8 @@ app.get('*', (req, res) => {
 });
 
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`FocusGen running at http://localhost:${PORT}`);
+  app.listen(PORT, HOST, () => {
+    console.log(`FocusGen listening on port ${PORT} (bound to ${HOST})`);
   });
 }
 

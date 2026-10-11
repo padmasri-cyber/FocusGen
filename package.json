@@ -3,9 +3,12 @@
   "version": "1.0.0",
   "description": "FocusGen - Eco-Adaptive AI Image Generator",
   "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
-    "start": "node --dns-result-order=ipv4first server.js",
-    "dev": "node --dns-result-order=ipv4first server.js",
+    "start": "node server.js",
+    "dev": "node server.js",
     "warmup": "node warmup.js",
     "test": "node --dns-result-order=ipv4first test_suite.js && node --dns-result-order=ipv4first test_chat_suite.js && node --dns-result-order=ipv4first test_new_requirements.js && node --dns-result-order=ipv4first test_cloudflare_provider.js && node --dns-result-order=ipv4first test_flux_cases.js"
   },

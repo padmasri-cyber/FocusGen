@@ -1,21 +1,25 @@
 # Dependencies
 node_modules/
 
-# Environment Variables (Keep API keys strictly safe)
+# Environment Variables & Secrets
 .env
 .env.local
+.env.*.local
 
-# Logs and OS files
-*.log
-.DS_Store
-Thumbs.db
-
-# Database and Uploads
+# Database and Runtime Uploads
 *.db
 *.sqlite
+data/*.db
+data/*.sqlite
 data/
 uploads/
 
-# Local backup folders
-backup_pre_*/
+# Local AI Caches and Logs
+data/ai_cache/
+*.log
+logs/
+.DS_Store
+Thumbs.db
 
+# Backup folders
+backup_pre_*/

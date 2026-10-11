@@ -4,17 +4,29 @@ const fs = require('fs');
 const Database = require('better-sqlite3');
 const crypto = require('crypto');
 
-// Ensure data directory exists
-const dataDir = path.join(__dirname, 'data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+// Resolve database path from environment variable (default: ./data/focusgen.db)
+const rawDbPath = process.env.DB_PATH || './data/focusgen.db';
+const dbPath = path.isAbsolute(rawDbPath) ? rawDbPath : path.resolve(__dirname, rawDbPath);
+
+// Ensure database parent directory exists
+const dbDir = path.dirname(dbPath);
+if (!fs.existsSync(dbDir)) {
+  fs.mkdirSync(dbDir, { recursive: true });
 }
 
-const dbPath = path.join(dataDir, 'focusgen.db');
-const db = new Database(dbPath);
+// Connect to SQLite database safely
+let db;
+try {
+  db = new Database(dbPath);
+} catch (err) {
+  console.warn('[Database] Initial connection warning:', err.message, '- recreating at', dbPath);
+  db = new Database(dbPath);
+}
 
 // Enable WAL mode for better concurrency and performance
-db.pragma('journal_mode = WAL');
+try {
+  db.pragma('journal_mode = WAL');
+} catch (e) {}
 
 // Initialize schema
 db.exec(`
